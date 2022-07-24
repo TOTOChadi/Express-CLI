@@ -1,0 +1,19 @@
+{
+  "name": "express-generator",
+  "version": "1.0.0",
+  "description": "a cli tool to generate an express project",
+  "main": "index.js",
+  "author": "ChadiSt",
+  "license": "MIT",
+  "scripts": {
+    "start": "node -r esm index.js"
+  },
+  "dependencies": {
+    "esm": "^3.2.25",
+    "i18n": "^0.15.0",
+    "terminal-kit": "^2.4.0"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^4.1.0"
+  }
+}

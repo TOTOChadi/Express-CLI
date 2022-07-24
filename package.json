@@ -5,15 +5,16 @@
   "main": "index.js",
   "author": "ChadiSt",
   "license": "MIT",
+  "_moduleAliases": {
+    "middlewares": "middlewares"
+  },
   "scripts": {
-    "start": "node -r esm index.js"
+    "start": "node -r esm -r module-alias/register index.js"
   },
   "dependencies": {
     "esm": "^3.2.25",
     "i18n": "^0.15.0",
+    "module-alias": "^2.2.2",
     "terminal-kit": "^2.4.0"
-  },
-  "devDependencies": {
-    "babel-plugin-module-resolver": "^4.1.0"
   }
 }

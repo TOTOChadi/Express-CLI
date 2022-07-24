@@ -1,0 +1,14 @@
+{
+    "mainMenu.init.project":"Initialize project",
+    "mainMenu.add.resource":"Add a project resource (Model/Controller/Route)",
+    "mainMenu.add.dockerFile":"Add a DockerFile",
+    "mainMenu.add.linter":"Add linter",
+    "mainMenu.add.authentification":"Add authentification",
+    "mainMenu.add.CI":"Add CI using CircleCI",
+    "resource.add.model":"Add a new model",
+    "resource.add.controller":"Add a new controller",
+    "resource.add.route:":"Add a new route",
+    "resource.add.all":"Add All",
+    "linter.add.prettier":"Add Prettier",
+    "linter.add.eslint":"Add eslint"
+}

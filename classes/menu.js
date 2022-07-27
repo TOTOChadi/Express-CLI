@@ -17,7 +17,7 @@ export default class Menu {
   /**
    * This method uses a prefix to find the appropriate menu items
    * we're looking for by looking for the given prefix in the i18n locales file.
-   * @param {String} menu - Prefix to look for in locales/en.json
+   * @param {String} menu Prefix to look for in locales/en.json
    * @returns
    */
   async getMenuItems(menu) {
@@ -41,7 +41,7 @@ export default class Menu {
     this.terminal.clear();
     this.terminal.printFiglet("Express CLI", "#da2c38", "ANSI Shadow", 1);
     this.terminal.println(i18n.__("intro.description"));
-    this.terminal.printStyle(i18n.__("intro.check.repo"), {
+    this.terminal.printStyleln(i18n.__("intro.check.repo"), {
       color: "cyan",
       isBold: true,
     });

@@ -1,6 +1,6 @@
 {
   "intro.description": "Express-CLI is a cli application that enables you to generate an ExpressJS minimalistic backend depending on your needs.\n",
-  "intro.check.repo": "Checking current repository...\n ",
+  "intro.check.repo": "Checking current repository...",
   "mainMenu.init.project": "Initialize project",
   "mainMenu.add.resource": "Add a project resource (Model/Controller/Route)",
   "mainMenu.add.dockerFile": "Add a DockerFile",

@@ -1,11 +1,8 @@
 import path from "path";
 import { readFile } from "fs/promises";
-import terminalKit from "terminal-kit";
-import figlet from "figlet";
 import i18n from "middlewares/i18n";
 import Generator from "classes/generator";
-
-// @Todo : Move TerminalKit to a middleware
+import Terminal from "middlewares/terminal";
 
 /**
  * This class handles the display of the appropriate wording
@@ -13,7 +10,7 @@ import Generator from "classes/generator";
  */
 export default class Menu {
   constructor() {
-    this.terminal = terminalKit.realTerminal;
+    this.terminal = new Terminal();
     this.generator = new Generator();
   }
 
@@ -42,20 +39,17 @@ export default class Menu {
    */
   async start() {
     this.terminal.clear();
-    this.terminal
-      .colorRgbHex(
-        "#da2c38",
-        figlet.textSync("Express CLI", {
-          font: "ANSI Shadow",
-          horizontalLayout: "default",
-          verticalLayout: "default",
-        })
-      )
-      .nextLine(1);
-    this.terminal(i18n.__("intro.description")).nextLine(1);
-    this.terminal.bold.cyan(i18n.__("intro.check.repo")).right(1);
+    this.terminal.printFiglet("Express CLI", "#da2c38", "ANSI Shadow", 1);
+    this.terminal.println(i18n.__("intro.description"));
+    this.terminal.printStyle(i18n.__("intro.check.repo"), {
+      color: "cyan",
+      isBold: true,
+    });
     const { error, message } = await this.generator.checkRepo();
-    this.terminal.color(error ? "red" : "green", message).nextLine(1);
+    this.terminal.printStyleln(message, {
+      color: error ? "red" : "green",
+      nextln: 2,
+    });
     if (error) process.exit();
     this.mainMenu();
   }

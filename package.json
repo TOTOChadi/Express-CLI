@@ -6,13 +6,15 @@
   "author": "ChadiSt",
   "license": "MIT",
   "_moduleAliases": {
-    "middlewares": "middlewares"
+    "middlewares": "middlewares",
+    "classes": "classes"
   },
   "scripts": {
     "start": "node -r esm -r module-alias/register index.js"
   },
   "dependencies": {
     "esm": "^3.2.25",
+    "figlet": "^1.5.2",
     "i18n": "^0.15.0",
     "module-alias": "^2.2.2",
     "terminal-kit": "^2.4.0"

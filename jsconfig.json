@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "*": ["./*"],
-      "middlewares/*": ["./middlewares/*"]
+      "middlewares/*": ["./middlewares/*"],
+      "classes/*": ["./classes/*"]
     }
   }
 }

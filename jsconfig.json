@@ -2,9 +2,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "*": ["./*"],
-      "middlewares/*": ["./middlewares/*"],
-      "classes/*": ["./classes/*"]
+      "#classes/*": ["./classes/*"],
+      "#middlewares/*": ["./middlewares/*"]
     }
   }
 }

@@ -4,19 +4,21 @@
   "description": "a cli tool to generate an express project",
   "main": "index.js",
   "author": "ChadiSt",
+  "type": "module",
   "license": "MIT",
-  "_moduleAliases": {
-    "middlewares": "middlewares",
-    "classes": "classes"
+  "imports": {
+    "#middlewares/*": "./middlewares/*.js",
+    "#classes/*": "./classes/*.js"
   },
   "scripts": {
-    "start": "node -r esm -r module-alias/register index.js"
+    "start": "node index.js"
+  },
+  "bin": {
+    "express-cli": "./index.js"
   },
   "dependencies": {
-    "esm": "^3.2.25",
     "figlet": "^1.5.2",
     "i18n": "^0.15.0",
-    "module-alias": "^2.2.2",
     "terminal-kit": "^2.4.0"
   }
 }

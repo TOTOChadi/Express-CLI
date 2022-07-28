@@ -8,7 +8,8 @@
   "license": "MIT",
   "imports": {
     "#middlewares/*": "./middlewares/*.js",
-    "#classes/*": "./classes/*.js"
+    "#classes/*": "./classes/*.js",
+    "#constants/*": "./constants/*.js"
   },
   "scripts": {
     "start": "node index.js"
@@ -19,6 +20,7 @@
   "dependencies": {
     "figlet": "^1.5.2",
     "i18n": "^0.15.0",
+    "prettier": "^2.7.1",
     "terminal-kit": "^2.4.0"
   }
 }

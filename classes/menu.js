@@ -1,8 +1,11 @@
 import path from "path";
+import * as url from "url";
 import { readFile } from "fs/promises";
-import i18n from "middlewares/i18n";
-import Generator from "classes/generator";
-import Terminal from "middlewares/terminal";
+import i18n from "#middlewares/i18n";
+import Terminal from "#middlewares/terminal";
+import Generator from "#classes/generator";
+
+import { INIT_PROJECT_QUESTIONS } from "#constants/index";
 
 /**
  * This class handles the display of the appropriate wording
@@ -22,6 +25,7 @@ export default class Menu {
    * and the value is the text to be displayed on the menu screen
    */
   async getMenuItems(menu) {
+    const __dirname = url.fileURLToPath(new URL(".", import.meta.url));
     const menuItemsPath = path.join(__dirname, "../locales/en.json");
     const menuData = JSON.parse(await readFile(menuItemsPath, "utf-8"));
     const menuKeys = Object.keys(menuData);
@@ -40,7 +44,7 @@ export default class Menu {
    */
   getSelectedID(menuItems, selectedValue) {
     return Object.keys(menuItems).find(
-      (key) => menuItems[key] === selectedValue
+      (key) => menuItems[key] === selectedValue.slice(2)
     );
   }
 
@@ -48,9 +52,11 @@ export default class Menu {
    * This method triggers the event related to the menu option selected
    * @param {String} selectedID ID of the selected option
    */
-  triggerEvent(selectedID) {
+  async triggerEvent(selectedID) {
+    this.terminal.eraseDisplayBelow();
     switch (selectedID) {
       case "mainMenu.init.project":
+        await this.initProjectMenu();
         break;
       case "mainMenu.add.resource":
         break;
@@ -92,10 +98,8 @@ export default class Menu {
       isBold: true,
     });
     const { error, message } = await this.generator.checkRepo();
-    this.terminal.printStyleln(message, {
-      color: error ? "red" : "green",
-      nextln: 2,
-    });
+    this.terminal.printResult(error, message);
+    this.terminal.saveCursor();
     if (error) process.exit();
     this.mainMenu();
   }
@@ -103,11 +107,22 @@ export default class Menu {
   async mainMenu() {
     this.terminal.printStyleln(i18n.__("select.option"), { isBold: true });
     const menuItems = await this.getMenuItems("mainMenu");
-    this.terminal.printColumnMenu(menuItems, (error, response) => {
+    this.terminal.printColumnMenu(menuItems, async (error, response) => {
       const selectedValue = response.selectedText;
       const selectedID = this.getSelectedID(menuItems, selectedValue);
-      this.triggerEvent(selectedID);
+      await this.triggerEvent(selectedID);
       process.exit();
     });
+  }
+
+  async initProjectMenu() {
+    this.terminal.printStyleln(i18n.__("init.project.text"), {
+      color: "cyan",
+      isBold: true,
+    });
+    let data = await this.terminal.askMultipleQuestions(INIT_PROJECT_QUESTIONS);
+    this.terminal.println();
+    const { error, message } = await this.generator.generatePackageJson(data);
+    this.terminal.printResult(error, message);
   }
 }

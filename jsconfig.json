@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "#classes/*": ["./classes/*"],
-      "#middlewares/*": ["./middlewares/*"]
+      "#middlewares/*": ["./middlewares/*"],
+      "#constants/*": ["./constants/*"]
     }
   }
 }

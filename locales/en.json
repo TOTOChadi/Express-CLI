@@ -14,6 +14,13 @@
   "resource.add.all": "Add All",
   "linter.add.prettier": "Add Prettier",
   "linter.add.eslint": "Add eslint",
-  "check.repo.error.rights": "✖ You don't have writing rights on this folder !",
-  "check.repo.success.rights": "✔ Repository check successful !"
+  "init.project.text": "To initialise your project please answer a few questions :",
+  "init.project.name": "Project name [{{name}}] : ",
+  "init.project.version": "Project version [{{version}}] : ",
+  "init.project.author": "Project author : ",
+  "init.project.description": "Project description : ",
+  "init.project.licence": "Project Licence [{{licence}}] : ",
+  "generate.package.json.success": "Package.json file successfuly generated !",
+  "check.repo.error.rights": "You don't have writing rights on this folder !",
+  "check.repo.success.rights": "Repository check successful !"
 }

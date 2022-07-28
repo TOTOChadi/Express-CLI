@@ -31,9 +31,21 @@ export default class Terminal {
    * @param {*} str string to be displayed
    * @param {*} nextln number of line breaks
    */
-  println(str, nextln = 1) {
+  println(str = "", nextln = 1) {
     this.print(str);
     this.terminal.nextLine(nextln);
+  }
+
+  /**
+   * Displays a success / error style message
+   * @param {Boolean} error
+   * @param {String} str
+   */
+  printResult(error, str) {
+    this.printStyleln((error ? " ✖ " : " ✔ ") + str, {
+      color: error ? "red" : "green",
+      nextln: 2,
+    });
   }
 
   /**
@@ -87,5 +99,34 @@ export default class Terminal {
       "‣ ".concat(item)
     );
     this.terminal.singleColumnMenu(formattedItems, callback);
+  }
+
+  saveCursor() {
+    this.terminal.saveCursor();
+  }
+
+  eraseDisplayBelow() {
+    this.terminal.restoreCursor();
+    this.terminal.eraseDisplayBelow();
+  }
+
+  async question(str, defaultValue = "", options = {}) {
+    this.printStyle("‣ ".concat(str), { isBold: true });
+    const name = await this.terminal.inputField(options).promise;
+    this.terminal.nextLine(1);
+    return name ? name : defaultValue;
+  }
+
+  async askMultipleQuestions(questions, options = {}) {
+    let data = {};
+    for (let question of questions) {
+      data[question.target] = await this.question(
+        question.message,
+        question.alt,
+        options
+      );
+      if (!data[question.target]) delete data[question.target];
+    }
+    return data;
   }
 }

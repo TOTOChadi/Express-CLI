@@ -6,7 +6,7 @@ import Terminal from "middlewares/terminal";
 
 /**
  * This class handles the display of the appropriate wording
- * by leveraging the terminal-kit package for colors,formatting...
+ * by leveraging the Terminal middleware for colors,formatting...
  */
 export default class Menu {
   constructor() {
@@ -18,17 +18,63 @@ export default class Menu {
    * This method uses a prefix to find the appropriate menu items
    * we're looking for by looking for the given prefix in the i18n locales file.
    * @param {String} menu Prefix to look for in locales/en.json
-   * @returns
+   * @returns {Object} where the key is the object id thats going to be used for the generator
+   * and the value is the text to be displayed on the menu screen
    */
   async getMenuItems(menu) {
     const menuItemsPath = path.join(__dirname, "../locales/en.json");
     const menuData = JSON.parse(await readFile(menuItemsPath, "utf-8"));
     const menuKeys = Object.keys(menuData);
-    let menuItems = [];
+    let menuItems = {};
     for (let item of menuKeys) {
-      if (item.startsWith(menu)) menuItems.push(i18n.__(item));
+      if (item.startsWith(menu)) menuItems[item] = i18n.__(item);
     }
     return menuItems;
+  }
+
+  /**
+   * This method returns the ID of the selected menu value
+   * @param {Object} menuItems List of menu items to filter
+   * @param {String} selectedValue Value that was selected on a menu
+   * @returns {String} ID of the selectedValue
+   */
+  getSelectedID(menuItems, selectedValue) {
+    return Object.keys(menuItems).find(
+      (key) => menuItems[key] === selectedValue
+    );
+  }
+
+  /**
+   * This method triggers the event related to the menu option selected
+   * @param {String} selectedID ID of the selected option
+   */
+  triggerEvent(selectedID) {
+    switch (selectedID) {
+      case "mainMenu.init.project":
+        break;
+      case "mainMenu.add.resource":
+        break;
+      case "mainMenu.add.dockerFile":
+        break;
+      case "mainMenu.add.linter":
+        break;
+      case "mainMenu.add.authentification":
+        break;
+      case "mainMenu.add.CI":
+        break;
+      case "resource.add.model":
+        break;
+      case "resource.add.controller":
+        break;
+      case "resource.add.route":
+        break;
+      case "resource.add.all":
+        break;
+      case "resource.add.all":
+        break;
+      case "linter.add.eslint":
+        break;
+    }
   }
 
   /**
@@ -54,5 +100,14 @@ export default class Menu {
     this.mainMenu();
   }
 
-  mainMenu() {}
+  async mainMenu() {
+    this.terminal.printStyleln(i18n.__("select.option"), { isBold: true });
+    const menuItems = await this.getMenuItems("mainMenu");
+    this.terminal.printColumnMenu(menuItems, (error, response) => {
+      const selectedValue = response.selectedText;
+      const selectedID = this.getSelectedID(menuItems, selectedValue);
+      this.triggerEvent(selectedID);
+      process.exit();
+    });
+  }
 }

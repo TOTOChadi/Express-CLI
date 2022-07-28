@@ -76,4 +76,16 @@ export default class Terminal {
     this.printStyle(str, styles);
     this.terminal.nextLine(styles.nextln);
   }
+
+  /**
+   * Displays an interactive menu on a single column
+   * @param {Object} menuItems Items to be displayed
+   * @param {Function} callback callback function
+   */
+  printColumnMenu(menuItems, callback) {
+    const formattedItems = Object.values(menuItems).map((item) =>
+      "‣ ".concat(item)
+    );
+    this.terminal.singleColumnMenu(formattedItems, callback);
+  }
 }

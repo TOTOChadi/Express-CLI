@@ -1,6 +1,7 @@
 {
   "intro.description": "Express-CLI is a cli application that enables you to generate an ExpressJS minimalistic backend depending on your needs.\n",
   "intro.check.repo": "Checking current repository...",
+  "select.option": "Please select an option from the menu below :",
   "mainMenu.init.project": "Initialize project",
   "mainMenu.add.resource": "Add a project resource (Model/Controller/Route)",
   "mainMenu.add.dockerFile": "Add a DockerFile",
@@ -9,11 +10,10 @@
   "mainMenu.add.CI": "Add CI using CircleCI",
   "resource.add.model": "Add a new model",
   "resource.add.controller": "Add a new controller",
-  "resource.add.route:": "Add a new route",
+  "resource.add.route": "Add a new route",
   "resource.add.all": "Add All",
   "linter.add.prettier": "Add Prettier",
   "linter.add.eslint": "Add eslint",
-  "intro.getStarted": "intro.getStarted",
   "check.repo.error.rights": "✖ You don't have writing rights on this folder !",
   "check.repo.success.rights": "✔ Repository check successful !"
 }

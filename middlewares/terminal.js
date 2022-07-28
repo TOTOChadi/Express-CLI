@@ -127,6 +127,7 @@ export default class Terminal {
       );
       if (!data[question.target]) delete data[question.target];
     }
+    this.nextLine(1);
     return data;
   }
 }

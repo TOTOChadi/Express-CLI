@@ -121,7 +121,6 @@ export default class Menu {
       isBold: true,
     });
     let data = await this.terminal.askMultipleQuestions(INIT_PROJECT_QUESTIONS);
-    this.terminal.println();
     const { error, message } = await this.generator.generatePackageJson(data);
     this.terminal.printResult(error, message);
   }

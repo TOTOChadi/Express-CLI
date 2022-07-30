@@ -1,6 +1,10 @@
 {
   "intro.description": "Express-CLI is a cli application that enables you to generate an ExpressJS minimalistic backend depending on your needs.\n",
-  "intro.check.repo": "Checking current repository...",
+  "intro.check.repo.rights": "Checking the rights on the current repository...",
+  "check.repo.error.rights": "You don't have writing rights on this folder !",
+  "intro.check.repo.resources": "Checking the current project resources ...",
+  "check.repo.rights.success": "Repository check successful !",
+  "check.repo.resources.success": "Repository resources check successful !",
   "select.option": "Please select an option from the menu below :",
   "mainMenu.init.project": "Initialize project",
   "mainMenu.add.resource": "Add a project resource (Model/Controller/Route)",
@@ -21,6 +25,5 @@
   "init.project.description": "Project description : ",
   "init.project.licence": "Project Licence [{{licence}}] : ",
   "generate.package.json.success": "Package.json file successfuly generated !",
-  "check.repo.error.rights": "You don't have writing rights on this folder !",
-  "check.repo.success.rights": "Repository check successful !"
+  "check.repo.success.rights": "check.repo.success.rights"
 }

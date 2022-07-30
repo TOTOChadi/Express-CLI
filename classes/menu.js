@@ -93,17 +93,40 @@ export default class Menu {
     this.terminal.clear();
     this.terminal.printFiglet("Express CLI", "#da2c38", "ANSI Shadow", 1);
     this.terminal.println(i18n.__("intro.description"));
-    this.terminal.printStyleln(i18n.__("intro.check.repo"), {
-      color: "cyan",
-      isBold: true,
-    });
-    const { error, message } = await this.generator.checkRepo();
-    this.terminal.printResult(error, message);
+
+    await this.checkRepoMenu(
+      i18n.__("intro.check.repo.rights"),
+      async () => await this.generator.checkRepo()
+    );
+
+    await this.checkRepoMenu(
+      i18n.__("intro.check.repo.resources"),
+      async () => await this.generator.checkExistingResources()
+    );
+
     this.terminal.saveCursor();
-    if (error) process.exit();
+
     this.mainMenu();
   }
 
+  /**
+   * Displays the folder check messages
+   * @param {*} title
+   * @param {*} generatorFunction
+   */
+  async checkRepoMenu(title, generatorFunction) {
+    this.terminal.printStyleln(title, {
+      color: "cyan",
+      isBold: true,
+    });
+    let { error, message } = await generatorFunction();
+    this.terminal.printResult(error, message);
+    if (error) process.exit();
+  }
+
+  /**
+   * Displays the main menu
+   */
   async mainMenu() {
     this.terminal.printStyleln(i18n.__("select.option"), { isBold: true });
     const menuItems = await this.getMenuItems("mainMenu");

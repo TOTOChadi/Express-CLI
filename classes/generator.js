@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import util from "util";
 import prettier from "prettier";
 import i18n from "#middlewares/i18n";
@@ -43,11 +44,13 @@ export default class Generator {
    */
   async generatePackageJson(infos) {
     const writefile = util.promisify(fs.writeFile);
-    const data = prettier.format(JSON.stringify(infos), {
-      parser: "json",
-    });
+    const targetDir = path.join(this.currentDir, "/", "package.json");
     try {
-      await writefile(this.currentDir + "/package.json", data, "utf-8");
+      await writefile(
+        targetDir,
+        prettier.format(JSON.stringify(infos), { parser: "json" }),
+        "utf-8"
+      );
       return { message: i18n.__("generate.package.json.success") };
     } catch (error) {
       return { error: true, message: error.message };

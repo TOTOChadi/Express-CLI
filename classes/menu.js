@@ -4,6 +4,7 @@ import { readFile } from "fs/promises";
 import i18n from "#middlewares/i18n";
 import Terminal from "#middlewares/terminal";
 import Generator from "#classes/generator";
+import FileParser from "#classes/fileparser";
 
 import { INIT_PROJECT_QUESTIONS } from "#constants/index";
 
@@ -15,7 +16,10 @@ export default class Menu {
   constructor() {
     this.terminal = new Terminal();
     this.generator = new Generator();
+    this.fileparser = new FileParser();
   }
+
+  /******************************* HELPER METHODS  **********************************/
 
   /**
    * This method uses a prefix to find the appropriate menu items
@@ -44,7 +48,7 @@ export default class Menu {
    */
   getSelectedID(menuItems, selectedValue) {
     return Object.keys(menuItems).find(
-      (key) => menuItems[key] === selectedValue.slice(2)
+      (key) => menuItems[key] === selectedValue.slice(2) // removes the bulletpoint character
     );
   }
 
@@ -56,7 +60,7 @@ export default class Menu {
     this.terminal.eraseDisplayBelow();
     switch (selectedID) {
       case "mainMenu.init.project":
-        await this.initProjectMenu();
+        await this.initializeProjectMenu();
         break;
       case "mainMenu.add.resource":
         break;
@@ -84,6 +88,23 @@ export default class Menu {
   }
 
   /**
+   * Displays the repository check messages
+   * @param {*} title
+   * @param {*} callback
+   */
+  async checkRepoMenu(title, callback) {
+    this.terminal.printStyleln(title, {
+      color: "cyan",
+      isBold: true,
+    });
+    let { error, message } = await callback();
+    this.terminal.printResult(error, message);
+    if (error) process.exit();
+  }
+
+  /******************************* STARTUP METHODS  **********************************/
+
+  /**
    * This method launches the app by displaying a header and a small description
    * then proceeds to checking if the folder we're running the script for has
    * writing rights for our app to work if it does it imports through the generator class
@@ -96,32 +117,17 @@ export default class Menu {
 
     await this.checkRepoMenu(
       i18n.__("intro.check.repo.rights"),
-      async () => await this.generator.checkRepo()
+      async () => await this.fileparser.checkRepo()
     );
 
     await this.checkRepoMenu(
       i18n.__("intro.check.repo.resources"),
-      async () => await this.generator.checkExistingResources()
+      async () => await this.fileparser.checkExistingResources()
     );
 
     this.terminal.saveCursor();
 
     this.mainMenu();
-  }
-
-  /**
-   * Displays the folder check messages
-   * @param {*} title
-   * @param {*} generatorFunction
-   */
-  async checkRepoMenu(title, generatorFunction) {
-    this.terminal.printStyleln(title, {
-      color: "cyan",
-      isBold: true,
-    });
-    let { error, message } = await generatorFunction();
-    this.terminal.printResult(error, message);
-    if (error) process.exit();
   }
 
   /**
@@ -138,7 +144,13 @@ export default class Menu {
     });
   }
 
-  async initProjectMenu() {
+  /******************************* START AN EXPRESSJS PROJECT METHODS  **********************************/
+
+  /**
+   * This function displays the menu for starting a new
+   * ExpressJs project
+   */
+  async initializeProjectMenu() {
     this.terminal.printStyleln(i18n.__("init.project.text"), {
       color: "cyan",
       isBold: true,

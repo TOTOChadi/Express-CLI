@@ -4,7 +4,6 @@ import { readFile } from "fs/promises";
 import i18n from "#middlewares/i18n";
 import Terminal from "#middlewares/terminal";
 import Generator from "#classes/generator";
-import FileParser from "#classes/fileparser";
 
 import { INIT_PROJECT_QUESTIONS } from "#constants/index";
 
@@ -16,7 +15,6 @@ export default class Menu {
   constructor() {
     this.terminal = new Terminal();
     this.generator = new Generator();
-    this.fileparser = new FileParser();
   }
 
   /******************************* HELPER METHODS  **********************************/
@@ -117,12 +115,12 @@ export default class Menu {
 
     await this.checkRepoMenu(
       i18n.__("intro.check.repo.rights"),
-      async () => await this.fileparser.checkRepo()
+      async () => await this.generator.checkRepo()
     );
 
     await this.checkRepoMenu(
       i18n.__("intro.check.repo.resources"),
-      async () => await this.fileparser.checkExistingResources()
+      async () => await this.generator.checkExistingResources()
     );
 
     this.terminal.saveCursor();

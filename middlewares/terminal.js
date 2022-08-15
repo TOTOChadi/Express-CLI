@@ -117,6 +117,16 @@ export default class Terminal {
     return name ? name : defaultValue;
   }
 
+  async yesNoQuestion(question) {
+    this.print(question);
+    const isOk = await this.terminal.yesOrNo({
+      yes: ["y", "ENTER"],
+      no: ["n"],
+    }).promise;
+    this.println("");
+    return isOk;
+  }
+
   async askMultipleQuestions(questions, options = {}) {
     let data = {};
     for (let question of questions) {

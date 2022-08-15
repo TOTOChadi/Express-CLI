@@ -58,7 +58,13 @@ export default class Menu {
     this.terminal.eraseDisplayBelow();
     switch (selectedID) {
       case "mainMenu.init.project":
-        await this.initializeProjectMenu();
+        const packageJson = {
+          name: "package.json",
+          doesExist: this.generator.hasPackageJson,
+        };
+        await this.generateResourceMenu(packageJson, async () => {
+          await this.initializeProjectMenu();
+        });
         break;
       case "mainMenu.add.resource":
         break;
@@ -85,6 +91,8 @@ export default class Menu {
     }
   }
 
+  /******************************* REUSABLE METHODS  **********************************/
+
   /**
    * Displays the repository check messages
    * @param {*} title
@@ -98,6 +106,37 @@ export default class Menu {
     let { error, message } = await callback();
     this.terminal.printResult(error, message);
     if (error) process.exit();
+  }
+
+  /**
+   * Asks the user if they want to overwrite the current resource if it exists
+   * @param {{ name : String, doesExist: Boolean }} resource
+   */
+  async shouldOverwrite(resource) {
+    const { name, doesExist } = resource;
+    if (doesExist)
+      return await this.terminal.yesNoQuestion(
+        i18n.__("resource.overwrite", {
+          resourceName: name,
+        })
+      );
+    return false;
+  }
+
+  /**
+   *
+   * @param {{ name : String, doesExist: Boolean }} resource
+   * @param {Function} generatorMenu callback function for when user overwrites the resource
+   * @param {Function} next callback function for when user doesn't overwrites the resource
+   */
+  async generateResourceMenu(resource, generatorMenu, next) {
+    const shouldGenerate = await this.shouldOverwrite(resource);
+    if (shouldGenerate) await generatorMenu();
+    else if (next) await next();
+    else {
+      this.terminal.eraseDisplayBelow();
+      this.mainMenu();
+    }
   }
 
   /******************************* STARTUP METHODS  **********************************/
@@ -138,17 +177,17 @@ export default class Menu {
       const selectedValue = response.selectedText;
       const selectedID = this.getSelectedID(menuItems, selectedValue);
       await this.triggerEvent(selectedID);
-      process.exit();
     });
   }
 
-  /******************************* START AN EXPRESSJS PROJECT METHODS  **********************************/
+  /******************************* GENERATE PROJECT METHODS  **********************************/
 
   /**
    * This function displays the menu for starting a new
    * ExpressJs project
    */
   async initializeProjectMenu() {
+    this.terminal.eraseDisplayBelow();
     this.terminal.printStyleln(i18n.__("init.project.text"), {
       color: "cyan",
       isBold: true,

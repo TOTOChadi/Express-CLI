@@ -16,6 +16,7 @@
   "resource.add.controller": "Add a new controller",
   "resource.add.route": "Add a new route",
   "resource.add.all": "Add All",
+  "resource.overwrite": "Do you wish to overwrite {{resourceName}} ? [Y/N] : ",
   "linter.add.prettier": "Add Prettier",
   "linter.add.eslint": "Add eslint",
   "init.project.text": "To initialise your project please answer a few questions :",

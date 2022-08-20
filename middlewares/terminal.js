@@ -9,6 +9,12 @@ import figlet from "figlet";
 export default class Terminal {
   constructor() {
     this.terminal = terminalKit.realTerminal;
+    this.terminal.on("key", (name, matches, data) => {
+      if (name === "CTRL_C") {
+        this.terminal.clear();
+        process.exit();
+      }
+    });
   }
 
   /**

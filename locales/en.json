@@ -25,6 +25,8 @@
   "init.project.author": "Project author : ",
   "init.project.description": "Project description : ",
   "init.project.licence": "Project Licence [{{licence}}] : ",
-  "generate.package.json.success": "Package.json file successfuly generated !",
+  "generate.package.json.success": "Package.json file successfully generated !",
+  "generate.dockerfile.message": "Generating DockerFile ...",
+  "generate.dockerfile.success": "Dockerfile successfully generated",
   "check.repo.success.rights": "check.repo.success.rights"
 }

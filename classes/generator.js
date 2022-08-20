@@ -1,7 +1,12 @@
-import { promises as fs, constants as rights } from "fs";
+import { exec } from "child_process";
+import util from "util";
+import { promises as fs, constants as rights, readFile } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import prettier from "prettier";
 import i18n from "#middlewares/i18n";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * This class handles the generation of the specified resources using
@@ -80,6 +85,17 @@ export default class Generator {
     return [];
   }
 
+  async replaceTemplate(templateFile, target, toReplace, newValue) {
+    /** Get Template file content */
+    const templatePath = path.join(__dirname, "../templates", templateFile);
+    const data = await fs.readFile(templateFile, "utf-8");
+    /** Replace template keyword (toReplace) */
+    const re = new RegExp(toReplace, "g");
+    const newFileData = data.replace(re, newValue);
+    /** Create the file */
+    await fs.writeFile(target, newFileData, "utf-8");
+  }
+
   /******************************* CORE METHODS  **********************************/
 
   /**
@@ -117,6 +133,27 @@ export default class Generator {
         "utf-8"
       );
       return { message: i18n.__("generate.package.json.success") };
+    } catch (error) {
+      return { error: true, message: error.message };
+    }
+  }
+
+  /**
+   * This function generate a Dockerfile based on the user's version of node
+   */
+  async generateDockerFile() {
+    const execute = util.promisify(exec);
+    try {
+      const { stdout, stderr } = await execute("node --version");
+      const nodeVersion = stdout.slice(1);
+      const target = path.join(this.currentDir, "/", "DockerFile");
+      await this.replaceTemplate(
+        "Dockerfile",
+        target,
+        "{{version}}",
+        nodeVersion
+      );
+      return { message: i18n.__("generate.dockerfile.success") };
     } catch (error) {
       return { error: true, message: error.message };
     }

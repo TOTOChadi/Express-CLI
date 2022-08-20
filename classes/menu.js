@@ -50,55 +50,14 @@ export default class Menu {
     );
   }
 
-  /**
-   * This method triggers the event related to the menu option selected
-   * @param {String} selectedID ID of the selected option
-   */
-  async triggerEvent(selectedID) {
-    this.terminal.eraseDisplayBelow();
-    switch (selectedID) {
-      case "mainMenu.init.project":
-        const packageJson = {
-          name: "package.json",
-          doesExist: this.generator.hasPackageJson,
-        };
-        await this.generateResourceMenu(packageJson, async () => {
-          await this.initializeProjectMenu();
-        });
-        break;
-      case "mainMenu.add.resource":
-        break;
-      case "mainMenu.add.dockerFile":
-        break;
-      case "mainMenu.add.linter":
-        break;
-      case "mainMenu.add.authentification":
-        break;
-      case "mainMenu.add.CI":
-        break;
-      case "resource.add.model":
-        break;
-      case "resource.add.controller":
-        break;
-      case "resource.add.route":
-        break;
-      case "resource.add.all":
-        break;
-      case "resource.add.all":
-        break;
-      case "linter.add.eslint":
-        break;
-    }
-  }
-
   /******************************* REUSABLE METHODS  **********************************/
 
   /**
-   * Displays the repository check messages
+   * Displays a title and performs a generator task then display a result message
    * @param {*} title
    * @param {*} callback
    */
-  async checkRepoMenu(title, callback) {
+  async doTaskMenu(title, callback) {
     this.terminal.printStyleln(title, {
       color: "cyan",
       isBold: true,
@@ -126,13 +85,17 @@ export default class Menu {
   /**
    *
    * @param {{ name : String, doesExist: Boolean }} resource
-   * @param {Function} generatorMenu callback function for when user overwrites the resource
+   * @param {Function} generator callback generator function for when user overwrites the resource
    * @param {Function} next callback function for when user doesn't overwrites the resource
    */
-  async generateResourceMenu(resource, generatorMenu, next) {
+  async generateResourceMenu(resource, generateResource, next) {
     const shouldGenerate = await this.shouldOverwrite(resource);
-    if (shouldGenerate) await generatorMenu();
-    else if (next) await next();
+    if (shouldGenerate) {
+      this.terminal.eraseDisplayBelow();
+      await this.doTaskMenu(resource.taskMessage, async () => {
+        return await generateResource();
+      });
+    } else if (next) await next();
     else {
       this.terminal.eraseDisplayBelow();
       this.mainMenu();
@@ -152,12 +115,12 @@ export default class Menu {
     this.terminal.printFiglet("Express CLI", "#da2c38", "ANSI Shadow", 1);
     this.terminal.println(i18n.__("intro.description"));
 
-    await this.checkRepoMenu(
+    await this.doTaskMenu(
       i18n.__("intro.check.repo.rights"),
       async () => await this.generator.checkRepo()
     );
 
-    await this.checkRepoMenu(
+    await this.doTaskMenu(
       i18n.__("intro.check.repo.resources"),
       async () => await this.generator.checkExistingResources()
     );
@@ -183,17 +146,58 @@ export default class Menu {
   /******************************* GENERATE PROJECT METHODS  **********************************/
 
   /**
-   * This function displays the menu for starting a new
-   * ExpressJs project
+   * This method triggers the event related to the menu option selected
+   * @param {String} selectedID ID of the selected option
    */
-  async initializeProjectMenu() {
+  async triggerEvent(selectedID) {
     this.terminal.eraseDisplayBelow();
-    this.terminal.printStyleln(i18n.__("init.project.text"), {
-      color: "cyan",
-      isBold: true,
-    });
-    let data = await this.terminal.askMultipleQuestions(INIT_PROJECT_QUESTIONS);
-    const { error, message } = await this.generator.generatePackageJson(data);
-    this.terminal.printResult(error, message);
+    switch (selectedID) {
+      case "mainMenu.init.project":
+        //TODO : create a getResourceInfo method on generator
+        const packageJson = {
+          name: "package.json",
+          doesExist: this.generator.hasPackageJson,
+          taskMessage: i18n.__("init.project.text"),
+        };
+        await this.generateResourceMenu(packageJson, async () => {
+          let data = await this.terminal.askMultipleQuestions(
+            INIT_PROJECT_QUESTIONS
+          );
+          return await this.generator.generatePackageJson(data);
+        });
+        break;
+      case "mainMenu.add.resource":
+        break;
+      case "mainMenu.add.dockerFile":
+        const dockerFile = {
+          name: "Dockerfile",
+          doesExist: this.generator.hasDockerFile,
+          taskMessage: i18n.__("generate.dockerfile.message"),
+        };
+        await this.generateResourceMenu(dockerFile, async () => {
+          return await this.generator.generateDockerFile();
+        });
+        break;
+      case "mainMenu.add.linter":
+        break;
+      case "mainMenu.add.authentification":
+        break;
+      case "mainMenu.add.CI":
+        break;
+      case "resource.add.model":
+        break;
+      case "resource.add.controller":
+        break;
+      case "resource.add.route":
+        break;
+      case "resource.add.all":
+        break;
+      case "resource.add.all":
+        break;
+      case "linter.add.eslint":
+        break;
+      default:
+        process.exit();
+    }
   }
 }

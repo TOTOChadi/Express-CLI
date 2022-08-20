@@ -1,6 +1,7 @@
 import path from "path";
 import { promises as fs, constants as rights } from "fs";
 import i18n from "#middlewares/i18n";
+import { info } from "console";
 
 export default class FileParser {
   constructor() {
@@ -96,5 +97,25 @@ export default class FileParser {
     } catch (error) {
       return { error: true, message: error.message };
     }
+  }
+
+  getResourceInfo(resourceName) {
+    let info;
+    switch (resourceName) {
+      case "package.json":
+        info = {
+          doesExist: this.hasPackageJson,
+          taskMessage: i18n.__("init.project.text"),
+        };
+        break;
+      case "DockerFile":
+        info = {
+          doesExist: this.hasDockerFile,
+          taskMessage: i18n.__("generate.dockerfile.message"),
+        };
+        break;
+    }
+
+    return { name: resourceName, ...info };
   }
 }

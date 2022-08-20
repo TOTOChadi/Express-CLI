@@ -151,15 +151,11 @@ export default class Menu {
    */
   async triggerEvent(selectedID) {
     this.terminal.eraseDisplayBelow();
+    let resource;
     switch (selectedID) {
       case "mainMenu.init.project":
-        //TODO : create a getResourceInfo method on generator
-        const packageJson = {
-          name: "package.json",
-          doesExist: this.generator.hasPackageJson,
-          taskMessage: i18n.__("init.project.text"),
-        };
-        await this.generateResource(packageJson, async () => {
+        resource = this.generator.getResourceInfo("package.json");
+        await this.generateResource(resource, async () => {
           let data = await this.terminal.askMultipleQuestions(
             INIT_PROJECT_QUESTIONS
           );
@@ -169,12 +165,8 @@ export default class Menu {
       case "mainMenu.add.resource":
         break;
       case "mainMenu.add.dockerFile":
-        const dockerFile = {
-          name: "Dockerfile",
-          doesExist: this.generator.hasDockerFile,
-          taskMessage: i18n.__("generate.dockerfile.message"),
-        };
-        await this.generateResource(dockerFile, async () => {
+        resource = this.generator.getResourceInfo("DockerFile");
+        await this.generateResource(resource, async () => {
           return await this.generator.generateDockerFile();
         });
         break;

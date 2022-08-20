@@ -11,7 +11,7 @@ export default class Terminal {
     this.terminal = terminalKit.realTerminal;
     this.terminal.on("key", (name, matches, data) => {
       if (name === "CTRL_C") {
-        this.terminal.clear();
+        //this.terminal.clear();
         process.exit();
       }
     });

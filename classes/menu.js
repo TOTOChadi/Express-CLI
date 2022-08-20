@@ -79,7 +79,7 @@ export default class Menu {
           resourceName: name,
         })
       );
-    return false;
+    return true;
   }
 
   /**
@@ -90,11 +90,14 @@ export default class Menu {
    */
   async generateResource(resource, generatorFunction, next) {
     const shouldGenerate = await this.shouldOverwrite(resource);
+
     if (shouldGenerate) {
       this.terminal.eraseDisplayBelow();
-      await this.doTaskMenu(resource.taskMessage, async () => {
-        return await generatorFunction();
-      });
+      const message = resource.taskMessage
+        ? resource.taskMessage // Choose custom message if it exists
+        : i18n.__("generate.resource.message", { resource: resource.name }); // Generic message otherwise
+
+      await this.doTaskMenu(message, generatorFunction);
     } else if (next) await next();
     else {
       this.terminal.eraseDisplayBelow();
@@ -171,6 +174,7 @@ export default class Menu {
         });
         break;
       case "mainMenu.add.linter":
+        await this.linterMenu();
         break;
       case "mainMenu.add.authentification":
         break;
@@ -187,9 +191,30 @@ export default class Menu {
       case "resource.add.all":
         break;
       case "linter.add.eslint":
+        resource = this.generator.getResourceInfo(".eslintrc.json");
+        await this.generateResource(resource, async () => {
+          return await this.generator.generateLinter(".eslintrc.json");
+        });
+        break;
+      case "linter.add.prettier":
+        resource = this.generator.getResourceInfo(".prettierrc.json");
+        await this.generateResource(resource, async () => {
+          return await this.generator.generateLinter(".prettierrc.json");
+        });
         break;
       default:
         process.exit();
     }
+  }
+
+  async linterMenu() {
+    this.terminal.printStyleln(i18n.__("select.option"), { isBold: true });
+    const menuItems = await this.getMenuItems("linter");
+    this.terminal.printColumnMenu(menuItems, async (error, response) => {
+      const selectedValue = response.selectedText;
+      const selectedID = this.getSelectedID(menuItems, selectedValue);
+      await this.triggerEvent(selectedID);
+      process.exit();
+    });
   }
 }

@@ -21,7 +21,7 @@ export default class Generator extends FileParser {
   async replaceTemplate(templateFile, target, toReplace, newValue) {
     /** Get Template file content */
     const templatePath = path.join(__dirname, "../templates", templateFile);
-    const data = await fs.readFile(templateFile, "utf-8");
+    const data = await fs.readFile(templatePath, "utf-8");
     /** Replace template keyword (toReplace) */
     const re = new RegExp(toReplace, "g");
     const newFileData = data.replace(re, newValue);
@@ -42,14 +42,18 @@ export default class Generator extends FileParser {
         prettier.format(JSON.stringify(infos), { parser: "json" }),
         "utf-8"
       );
-      return { message: i18n.__("generate.package.json.success") };
+      return {
+        message: i18n.__("generate.resource.success", {
+          resource: "Package.json",
+        }),
+      };
     } catch (error) {
       return { error: true, message: error.message };
     }
   }
 
   /**
-   * This function generate a Dockerfile based on the user's version of node
+   * This method generate a Dockerfile based on the user's version of node
    */
   async generateDockerFile() {
     const execute = util.promisify(exec);
@@ -58,12 +62,34 @@ export default class Generator extends FileParser {
       const nodeVersion = stdout.slice(1);
       const target = path.join(this.currentDir, "/", "DockerFile");
       await this.replaceTemplate(
-        "Dockerfile",
+        "DockerFile",
         target,
         "{{version}}",
         nodeVersion
       );
-      return { message: i18n.__("generate.dockerfile.success") };
+      return {
+        message: i18n.__("generate.resource.success", {
+          resource: "DockerFile",
+        }),
+      };
+    } catch (error) {
+      return { error: true, message: error.message };
+    }
+  }
+
+  /**
+   * This method generates a linter based on its type (eslint/prettier)
+   * @param {*} linter
+   * @returns
+   */
+  async generateLinter(linter) {
+    try {
+      const templatePath = path.join(__dirname, "../templates", linter);
+      const target = path.join(this.currentDir, "/", linter);
+      await fs.copyFile(templatePath, target);
+      return {
+        message: i18n.__("generate.resource.success", { resource: linter }),
+      };
     } catch (error) {
       return { error: true, message: error.message };
     }

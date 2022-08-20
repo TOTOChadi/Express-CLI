@@ -13,6 +13,7 @@ export default class FileParser {
     this.controllers = [];
     this.routes = [];
     this.hasPrettier = false;
+    this.hasEsLint = false;
     this.hasDockerFile = false;
   }
 
@@ -90,6 +91,7 @@ export default class FileParser {
       this.hasEnv = this.checkFileResource(files, ".env");
       this.hasDockerFile = this.checkFileResource(files, "Dockerfile");
       this.hasPrettier = this.checkFileResource(files, ".prettierrc");
+      this.hasEsLint = this.checkFileResource(files, ".eslintrc.json");
       this.models = await this.checkDirResource(folders, "models");
       this.controllers = await this.checkDirResource(folders, "controllers");
       this.routes = await this.checkDirResource(folders, "routes");
@@ -111,7 +113,11 @@ export default class FileParser {
       case "DockerFile":
         info = {
           doesExist: this.hasDockerFile,
-          taskMessage: i18n.__("generate.dockerfile.message"),
+        };
+        break;
+      case ".eslintrc.json":
+        info = {
+          doesExist: this.hasEsLint,
         };
         break;
     }

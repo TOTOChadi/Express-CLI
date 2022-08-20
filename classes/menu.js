@@ -53,7 +53,7 @@ export default class Menu {
   /******************************* REUSABLE METHODS  **********************************/
 
   /**
-   * Displays a title and performs a generator task then display a result message
+   * Displays a title and performs a generator task then display a success/error message
    * @param {*} title
    * @param {*} callback
    */
@@ -85,15 +85,15 @@ export default class Menu {
   /**
    *
    * @param {{ name : String, doesExist: Boolean }} resource
-   * @param {Function} generator callback generator function for when user overwrites the resource
+   * @param {Function} generatorFunction callback generator function for when user overwrites the resource
    * @param {Function} next callback function for when user doesn't overwrites the resource
    */
-  async generateResourceMenu(resource, generateResource, next) {
+  async generateResource(resource, generatorFunction, next) {
     const shouldGenerate = await this.shouldOverwrite(resource);
     if (shouldGenerate) {
       this.terminal.eraseDisplayBelow();
       await this.doTaskMenu(resource.taskMessage, async () => {
-        return await generateResource();
+        return await generatorFunction();
       });
     } else if (next) await next();
     else {
@@ -159,7 +159,7 @@ export default class Menu {
           doesExist: this.generator.hasPackageJson,
           taskMessage: i18n.__("init.project.text"),
         };
-        await this.generateResourceMenu(packageJson, async () => {
+        await this.generateResource(packageJson, async () => {
           let data = await this.terminal.askMultipleQuestions(
             INIT_PROJECT_QUESTIONS
           );
@@ -174,7 +174,7 @@ export default class Menu {
           doesExist: this.generator.hasDockerFile,
           taskMessage: i18n.__("generate.dockerfile.message"),
         };
-        await this.generateResourceMenu(dockerFile, async () => {
+        await this.generateResource(dockerFile, async () => {
           return await this.generator.generateDockerFile();
         });
         break;
